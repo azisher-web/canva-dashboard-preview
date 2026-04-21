@@ -473,9 +473,228 @@ export default function OverviewTab({ analysis, niches, insights, recs, category
         </div>
       </div>
 
-      {/* Preview gate — everything below is gated */}
-      <PreviewBanner text="Unlock full Overview — Top Creators, Ranking Signals, Keyword Intelligence, and Pro/Free Opportunities." />
+      {/* ── All Creators (top 3 visible, rest blurred) ── */}
+      {creators.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>All Creators</div>
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+            {isID ? 'Pembuat template teratas di kategori ini.' : 'Top template creators in this category.'}
+          </p>
+          {/* Visible top 3 */}
+          <div className="bento stagger">
+            {creators.slice(0, 3).map((c, i) => (
+              <div key={c.name} className="col-4">
+                <button onClick={() => setDrawerCreator(c.name)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  <div className="card2 interactive" style={{ padding: '16px 20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 8px', borderRadius: 6, background: 'var(--accent-dim)', color: 'var(--accent)' }}>#{i + 1}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700 }}>{c.name}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
+                      <span>{c.count} templates</span>
+                      <span style={{ color: 'var(--purple)' }}>{c.pro} Pro</span>
+                      <span style={{ color: 'var(--green)' }}>{c.free} Free</span>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
+          {/* Blurred remaining */}
+          {creators.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 8 }}>
+              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                <div className="bento">
+                  {creators.slice(3, 9).map((c, i) => (
+                    <div key={c.name} className="col-4">
+                      <div className="card2" style={{ padding: '16px 20px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{c.name}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{c.count} templates</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
+                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
+      {/* ── Canva Ranking Signal (top 3 visible, rest blurred) ── */}
+      {rankings.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Canva Ranking Signal</div>
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+            {isID ? 'Posisi rata-rata template per niche di hasil pencarian Canva.' : 'Average template position per niche in Canva search results.'}
+          </p>
+          <div className="bento stagger">
+            {rankings.slice(0, 3).map((r, i) => (
+              <div key={r.niche} className="col-4">
+                <button onClick={() => setDrawerRanking(r)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  <div className="card2 interactive" style={{ padding: '16px 20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, maxWidth: '65%' }}>{r.niche}</span>
+                      <span className={`badge-zone badge-${r.zone}`}><span className="dot" />{r.zone}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
+                      <span style={{ color: ZONE_COLORS[r.zone] || 'var(--text-muted)' }}>Avg #{r.avgPosition}</span>
+                      <span>{r.count} templates</span>
+                      {r.signal === 'rising' && <span style={{ color: 'var(--green)' }}>&#9650; Rising</span>}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
+          {rankings.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 8 }}>
+              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                <div className="bento">
+                  {rankings.slice(3, 9).map(r => (
+                    <div key={r.niche} className="col-4">
+                      <div className="card2" style={{ padding: '16px 20px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{r.niche}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Avg #{r.avgPosition} · {r.count} templates</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
+                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Keyword Intelligence (top 3 visible, rest blurred) ── */}
+      {keywords.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Keyword Intelligence</div>
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+            {isID ? 'Kata kunci paling umum dan zona distribusinya.' : 'Most common keywords and their zone distribution.'}
+          </p>
+          <div className="bento stagger">
+            {keywords.slice(0, 3).map((k, i) => (
+              <div key={k.keyword} className="col-4">
+                <div className="card2" style={{ padding: '16px 20px' }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{k.keyword}</div>
+                  <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
+                    <span>{k.count} templates</span>
+                    <span className={`badge-zone badge-${k.zone}`}><span className="dot" />{k.zone}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: 'rgba(66,153,225,0.15)', color: 'var(--blue)' }}>blue {k.blueCount}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: 'rgba(238,93,80,0.15)', color: 'var(--red)' }}>red {k.redCount}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {keywords.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 8 }}>
+              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                <div className="bento">
+                  {keywords.slice(3, 9).map(k => (
+                    <div key={k.keyword} className="col-4">
+                      <div className="card2" style={{ padding: '16px 20px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{k.keyword}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{k.count} templates</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
+                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Pro/Free Opportunities (top 3 visible, rest blurred) ── */}
+      {proFreeOps.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div className="eyebrow" style={{ marginBottom: 6 }}>Pro/Free Opportunities</div>
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+            {isID ? 'Peluang untuk membuat template Pro atau Free berdasarkan celah pasar.' : 'Opportunities to create Pro or Free templates based on market gaps.'}
+          </p>
+          <div className="bento stagger">
+            {proFreeOps.slice(0, 3).map((op, i) => {
+              const isFree = op.signal === 'create-free';
+              return (
+                <div key={op.niche} className="col-4">
+                  <button onClick={() => setDrawerProFree(op)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
+                    <div className="card2 interactive" style={{ padding: '16px 20px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, maxWidth: '65%' }}>{op.niche}</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: isFree ? 'rgba(52,211,153,0.15)' : 'rgba(139,92,246,0.15)', color: isFree ? 'var(--green)' : 'var(--purple)', textTransform: 'uppercase' }}>{isFree ? 'Free' : 'Pro'}</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
+                        <span>{op.count} templates</span>
+                        <span style={{ color: 'var(--purple)' }}>{op.proPct}% pro</span>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          {proFreeOps.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 8 }}>
+              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                <div className="bento">
+                  {proFreeOps.slice(3, 9).map(op => (
+                    <div key={op.niche} className="col-4">
+                      <div className="card2" style={{ padding: '16px 20px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{op.niche}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{op.count} templates · {op.proPct}% pro</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
+                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Creator drawer */}
+      {drawerCreator && (
+        <DrawerShell kind="Creator" onClose={() => setDrawerCreator(null)}>
+          <CreatorDrawerContent creatorName={drawerCreator} categoryTemplates={categoryTemplates} />
+        </DrawerShell>
+      )}
+
+      {/* Ranking Signal drawer */}
+      {drawerRanking && (
+        <DrawerShell kind="Ranking Signal" onClose={() => setDrawerRanking(null)}>
+          <RankingDrawerContent ranking={drawerRanking} categoryTemplates={categoryTemplates} nicheTemplateMap={nicheTemplateMap} />
+        </DrawerShell>
+      )}
+
+      {/* Pro/Free Opportunity drawer */}
+      {drawerProFree && (
+        <DrawerShell kind="Opportunity" onClose={() => setDrawerProFree(null)}>
+          <ProFreeDrawerContent opportunity={drawerProFree} categoryTemplates={categoryTemplates} nicheTemplateMap={nicheTemplateMap} />
+        </DrawerShell>
+      )}
 
     </div>
   );

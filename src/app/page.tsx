@@ -184,7 +184,9 @@ export default async function DashboardPage() {
   const analyses = await getAnalyses();
   const months = [...new Set(analyses.map(a => a.month))].sort().reverse();
   const latestMonth = months[0] || '';
-  const latestAnalyses = analyses.filter(a => a.month === latestMonth);
+  // Preview: filter to only Instagram Post categories (ID + EN)
+  const PREVIEW_CATEGORIES = ['instagram-post-id', 'instagram-post-en'];
+  const latestAnalyses = analyses.filter(a => a.month === latestMonth && PREVIEW_CATEGORIES.includes(a.category_name));
 
   // Fetch additional data sources
   const [designAnalyses, _summary, heroThumbnails] = await Promise.all([

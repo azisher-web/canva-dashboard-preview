@@ -16,10 +16,11 @@ interface CategoryTemplate {
 }
 
 /* ── Niche Packed Treemap ── */
-function NicheTreemap({ niches, zoneCounts, onOpenNiche }: {
+function NicheTreemap({ niches, zoneCounts, onOpenNiche, allowedNiches = [] }: {
   niches: NicheItem[];
   zoneCounts: { blue: number; yellow: number; red: number };
   onOpenNiche: (n: NicheItem) => void;
+  allowedNiches?: string[];
 }) {
   const [hovered, setHovered] = React.useState<string | null>(null);
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -163,6 +164,7 @@ function NicheTreemap({ niches, zoneCounts, onOpenNiche }: {
         {cells.map(c => {
           const zone = ZONE_COLORS_MAP[c.niche.zone as keyof typeof ZONE_COLORS_MAP] || ZONE_COLORS_MAP.blue;
           const isHov = hovered === c.niche.niche;
+          const isAllowed = allowedNiches.length === 0 || allowedNiches.includes(c.niche.niche);
           const showLabel = c.w > 50 && c.h > 30;
           const showCount = c.w > 40 && c.h > 24;
           const maxChars = Math.max(4, Math.floor(c.w / 8));
@@ -181,9 +183,10 @@ function NicheTreemap({ niches, zoneCounts, onOpenNiche }: {
                 width: Math.max(0, c.w - 3),
                 height: Math.max(0, c.h - 3),
                 borderRadius: 6,
-                background: isHov ? zone.border : zone.dim,
+                background: isHov && isAllowed ? zone.border : zone.dim,
                 border: `1px solid ${zone.border}`,
-                cursor: 'pointer',
+                cursor: isAllowed ? 'pointer' : 'default',
+                opacity: isAllowed ? 1 : 0.5,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -462,13 +465,24 @@ export default function NichesTab({ niches, categoryTemplates, nicheTemplateMap,
 
   const ZONE_COLORS: Record<string, string> = { blue: 'var(--blue)', yellow: 'var(--yellow)', red: 'var(--red)' };
 
-  const handleOpenNiche = React.useCallback((n: NicheItem) => setOpenNiche(n), []);
+  // Only top 3 red zone niches are clickable in preview
+  const redNiches = React.useMemo(() =>
+    niches.filter(n => n.zone === 'red').sort((a, b) => b.count - a.count).slice(0, 3).map(n => n.niche),
+    [niches]
+  );
+
+  const handleOpenNiche = React.useCallback((n: NicheItem) => {
+    if (redNiches.includes(n.niche)) {
+      setOpenNiche(n);
+    }
+    // Non-red or beyond top 3 red: do nothing (disabled in preview)
+  }, [redNiches]);
 
   return (
     <>
       <div>
         {/* Packed Treemap visualization */}
-        <NicheTreemap niches={niches} zoneCounts={zoneCounts} onOpenNiche={handleOpenNiche} />
+        <NicheTreemap niches={niches} zoneCounts={zoneCounts} onOpenNiche={handleOpenNiche} allowedNiches={redNiches} />
 
         {/* Filter bar */}
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
@@ -517,14 +531,18 @@ export default function NichesTab({ niches, categoryTemplates, nicheTemplateMap,
             No niches match this filter.
           </div>
         ) : (
+          <>
+          {/* Visible top 3 niche cards */}
           <div className="bento stagger">
-            {filtered.slice(0, 6).map(n => (
+            {filtered.slice(0, 3).map(n => {
+              const isAllowed = redNiches.includes(n.niche);
+              return (
               <div key={n.niche} className="col-4">
                 <button
-                  onClick={() => handleOpenNiche(n)}
-                  style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}
+                  onClick={() => isAllowed && handleOpenNiche(n)}
+                  style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: isAllowed ? 'pointer' : 'default', fontFamily: 'inherit' }}
                 >
-                  <div className="card2 interactive" style={{ padding: '18px 20px' }}>
+                  <div className={`card2 ${isAllowed ? 'interactive' : ''}`} style={{ padding: '18px 20px', opacity: isAllowed ? 1 : 0.7 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                       <div style={{ fontSize: 14.5, fontWeight: 700, lineHeight: 1.25, maxWidth: '70%' }}>{n.niche}</div>
                       <span className={`badge-zone badge-${n.zone}`}>
@@ -539,14 +557,54 @@ export default function NichesTab({ niches, categoryTemplates, nicheTemplateMap,
                       <span style={{ color: 'var(--purple)' }}>{n.pro ?? '—'} PRO</span>
                       <span style={{ color: 'var(--green)' }}>{n.free ?? '—'} FREE</span>
                     </div>
+                    {!isAllowed && (
+                      <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text-dim)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                        🔒 Locked
+                      </div>
+                    )}
                   </div>
                 </button>
               </div>
-            ))}
+              );
+            })}
           </div>
-        )}
-        {filtered.length > 6 && (
-          <PreviewBanner text={`${filtered.length - 6} more niches available with full access`} />
+
+          {/* Blurred remaining niche cards */}
+          {filtered.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 12 }}>
+              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                <div className="bento">
+                  {filtered.slice(3).map(n => (
+                    <div key={n.niche} className="col-4">
+                      <div className="card2" style={{ padding: '18px 20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                          <div style={{ fontSize: 14.5, fontWeight: 700, lineHeight: 1.25, maxWidth: '70%' }}>{n.niche}</div>
+                          <span className={`badge-zone badge-${n.zone}`}><span className="dot" />{n.zone}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
+                          <span style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1 }}>{n.count}</span>
+                          <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>templates &middot; {n.pct}%</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 14, fontSize: 11.5, fontWeight: 600 }}>
+                          <span style={{ color: 'var(--purple)' }}>{n.pro ?? '—'} PRO</span>
+                          <span style={{ color: 'var(--green)' }}>{n.free ?? '—'} FREE</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
+                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                  🔓 {filtered.length - 3} more niches available with full access
+                </div>
+              </div>
+            </div>
+          )}
+          </>
         )}
       </div>
 

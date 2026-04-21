@@ -66,7 +66,7 @@ export default function PreviewGate({
   fakeCount = 5,
   columns = 1,
   cardHeight = 72,
-  ctaText = 'Unlock full data — Subscribe to Blue Ocean Finder',
+  ctaText = 'Subscribe to kelaskreator.com to unlock all insights',
   ctaLink,
   children,
 }: PreviewGateProps) {
@@ -161,7 +161,7 @@ export default function PreviewGate({
             🔒 {ctaText}
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-            Preview shows top 3 results only
+            🔓 Preview shows top 3 results only
           </div>
         </div>
       </div>
@@ -187,10 +187,10 @@ export function PreviewBanner({ text }: { text?: string }) {
     >
       <div style={{ fontSize: 24, marginBottom: 8 }}>🔒</div>
       <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
-        {text || 'Full data available with subscription'}
+        {text || 'Subscribe to kelaskreator.com to unlock all insights'}
       </div>
       <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>
-        Subscribe to Blue Ocean Finder to unlock all insights
+        🔓 Subscribe to kelaskreator.com to unlock all insights
       </div>
     </div>
   );

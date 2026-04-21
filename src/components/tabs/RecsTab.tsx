@@ -194,62 +194,73 @@ export default function RecsTab({ recs, templateMap, analysis }: {
   const [openRec, setOpenRec] = React.useState<Recommendation | null>(null);
 
   if (recs.length === 0) return <EmptyState text="No recommendations available." />;
+
+  const VISIBLE_LIMIT = 3;
+  const visibleRecs = recs.slice(0, VISIBLE_LIMIT);
+  const blurredRecs = recs.slice(VISIBLE_LIMIT);
+
+  const renderRecCard = (rec: Recommendation, i: number, clickable: boolean) => (
+    <div key={i} className={`col-6 card2 ${clickable ? 'interactive' : ''}`} onClick={clickable ? () => setOpenRec(rec) : undefined} style={{ padding: 22, cursor: clickable ? 'pointer' : 'default' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+        <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 10px', borderRadius: 7, background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+          #{rec.rank}
+        </span>
+        <span className="badge-zone badge-blue"><span className="dot" />Blue ocean</span>
+      </div>
+      <h3 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: 10 }}>
+        {rec.niche}
+      </h3>
+      <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.55, margin: '0 0 16px',
+        display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
+        {rec.why}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+        <ScoreBar label="Score" value={rec.score} color="var(--accent)" />
+        <ScoreBar label="Demand" value={rec.potentialDemand} color="var(--green)" />
+        <ScoreBar label="Competition" value={rec.competition} color="var(--red)" />
+      </div>
+      {rec.keywords?.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: rec.examples?.length ? 14 : 0 }}>
+          {rec.keywords.slice(0, 5).map((k, j) => <span key={j} className="pill">{k}</span>)}
+        </div>
+      )}
+      {rec.examples && rec.examples.length > 0 && (
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
+          {rec.examples.slice(0, 3).map((ex, j) => {
+            const info = templateMap[ex.title];
+            return (
+              <TemplateThumbnail key={j} title={ex.title} canvaUrl={info?.url || ex.url} thumbnailUrl={info?.thumbnail} index={j + i * 3} size={64} showTitle isPro={info?.is_pro} />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
+      {/* Visible top 3 */}
       <div className="bento">
-        {recs.slice(0, 2).map((rec, i) => (
-          <div key={i} className="col-6 card2 interactive" onClick={() => setOpenRec(rec)} style={{ padding: 22 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 10px', borderRadius: 7, background: 'var(--accent-dim)', color: 'var(--accent)' }}>
-                #{rec.rank}
-              </span>
-              <span className="badge-zone badge-blue"><span className="dot" />Blue ocean</span>
-            </div>
-            <h3 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: 10 }}>
-              {rec.niche}
-            </h3>
-            <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.55, margin: '0 0 16px',
-              display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
-              {rec.why}
-            </p>
-            {/* Score bars */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
-              <ScoreBar label="Score" value={rec.score} color="var(--accent)" />
-              <ScoreBar label="Demand" value={rec.potentialDemand} color="var(--green)" />
-              <ScoreBar label="Competition" value={rec.competition} color="var(--red)" />
-            </div>
-            {/* Keywords */}
-            {rec.keywords?.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: rec.examples?.length ? 14 : 0 }}>
-                {rec.keywords.slice(0, 5).map((k, j) => <span key={j} className="pill">{k}</span>)}
-              </div>
-            )}
-            {/* Template thumbnails */}
-            {rec.examples && rec.examples.length > 0 && (
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
-                {rec.examples.slice(0, 3).map((ex, j) => {
-                  const info = templateMap[ex.title];
-                  return (
-                    <TemplateThumbnail
-                      key={j}
-                      title={ex.title}
-                      canvaUrl={info?.url || ex.url}
-                      thumbnailUrl={info?.thumbnail}
-                      index={j + i * 3}
-                      size={64}
-                      showTitle
-                      isPro={info?.is_pro}
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        ))}
+        {visibleRecs.map((rec, i) => renderRecCard(rec, i, true))}
       </div>
 
-      {recs.length > 2 && (
-        <PreviewBanner text={`${recs.length - 2} more recommendations available with full access`} />
+      {/* Blurred remaining with CTA */}
+      {blurredRecs.length > 0 && (
+        <div style={{ position: 'relative', marginTop: 12 }}>
+          <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+            <div className="bento">
+              {blurredRecs.map((rec, i) => renderRecCard(rec, i + VISIBLE_LIMIT, false))}
+            </div>
+          </div>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
+            <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
+              🔒 Subscribe to kelaskreator.com to unlock all insights
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+              🔓 {blurredRecs.length} more recommendations available with full access
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Drawer */}

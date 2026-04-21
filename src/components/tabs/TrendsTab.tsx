@@ -4,7 +4,6 @@ import React from 'react';
 import DesignTrends, { type PatternDrawerData } from '@/components/DesignTrends';
 import type { DesignAnalysis } from '@/lib/types';
 import { DrawerShell, TemplateThumbnail, THUMB_GRADIENTS, EmptyState } from './shared';
-import { PreviewBanner } from '@/components/PreviewGate';
 
 interface CategoryTemplate {
   title: string;
@@ -64,9 +63,83 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
   designAnalysis: DesignAnalysis | null;
   categoryTemplates: CategoryTemplate[];
 }) {
-  return (
-    <div>
-      <PreviewBanner text="Design Trends analysis available with full access — unlock style patterns, visual signals, and template examples." />
+  const [openPattern, setOpenPattern] = React.useState<PatternDrawerData | null>(null);
+
+  if (!designAnalysis || !designAnalysis.style_distribution?.length) {
+    return <EmptyState text="No design trends data available for this category." />;
+  }
+
+  const patterns = designAnalysis.style_distribution || [];
+  const VISIBLE_LIMIT = 3;
+  const visiblePatterns = patterns.slice(0, VISIBLE_LIMIT);
+  const blurredPatterns = patterns.slice(VISIBLE_LIMIT);
+
+  const renderPatternCard = (p: typeof patterns[0], i: number) => (
+    <div key={i} className="col-4">
+      <div className="card2 interactive" style={{ padding: '18px 20px', cursor: 'pointer' }}
+        onClick={() => setOpenPattern({
+          pattern: p.style,
+          style: p.style,
+          signal: p.count > 8 ? 'high' : p.count > 4 ? 'medium' : 'low',
+          total_count: p.count,
+          niches: [],
+          matchedTemplates: [],
+        })}
+      >
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{p.style}</div>
+        <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
+          <span>{p.count} templates</span>
+          <span style={{
+            fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4,
+            background: p.count > 8 ? 'rgba(1,181,116,0.15)' : p.count > 4 ? 'rgba(255,206,32,0.15)' : 'var(--bg-hover)',
+            color: p.count > 8 ? '#01B574' : p.count > 4 ? '#FFCE20' : 'var(--text-dim)',
+            textTransform: 'uppercase',
+          }}>
+            {p.count > 8 ? 'high' : p.count > 4 ? 'medium' : 'low'} signal
+          </span>
+        </div>
+      </div>
     </div>
+  );
+
+  return (
+    <>
+      <div>
+        <div className="eyebrow" style={{ marginBottom: 6 }}>Design Trends</div>
+        <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+          Style patterns and visual signals identified across templates.
+        </p>
+
+        {/* Visible top 3 */}
+        <div className="bento stagger">
+          {visiblePatterns.map((p, i) => renderPatternCard(p, i))}
+        </div>
+
+        {/* Blurred remaining */}
+        {blurredPatterns.length > 0 && (
+          <div style={{ position: 'relative', marginTop: 12 }}>
+            <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+              <div className="bento">
+                {blurredPatterns.map((p, i) => renderPatternCard(p, i + VISIBLE_LIMIT))}
+              </div>
+            </div>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
+              <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
+                🔒 Subscribe to kelaskreator.com to unlock all insights
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                🔓 {blurredPatterns.length} more design trends available with full access
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {openPattern && (
+        <DrawerShell kind="Design Pattern" onClose={() => setOpenPattern(null)}>
+          <StylePatternDrawerContent pattern={openPattern} categoryTemplates={categoryTemplates} />
+        </DrawerShell>
+      )}
+    </>
   );
 }

@@ -6,7 +6,9 @@ import { usePathname } from 'next/navigation';
 import BODashIcon from './BODashIcon';
 
 const NAV_ITEMS = [
-  { href: '/',         label: 'Home',       icon: 'home' },
+  { href: '/',            label: 'Home',       icon: 'home' },
+  { href: '/categories',  label: 'Categories', icon: 'folder' },
+  { href: '/compare',     label: 'Compare',    icon: 'chart' },
 ];
 
 export default function Sidebar() {
