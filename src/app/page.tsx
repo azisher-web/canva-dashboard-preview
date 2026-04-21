@@ -185,7 +185,7 @@ export default async function DashboardPage() {
   const months = [...new Set(analyses.map(a => a.month))].sort().reverse();
   const latestMonth = months[0] || '';
   // Preview: filter to only Instagram Post categories (ID + EN)
-  const PREVIEW_CATEGORIES = ['instagram-post-id', 'instagram-post-en'];
+  const PREVIEW_CATEGORIES = ['instagram-posts', 'kiriman-instagram'];
   const latestAnalyses = analyses.filter(a => a.month === latestMonth && PREVIEW_CATEGORIES.includes(a.category_name));
 
   // Fetch additional data sources
