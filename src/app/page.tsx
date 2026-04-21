@@ -207,7 +207,8 @@ export default async function DashboardPage() {
   const topOpp = topByBlue[0] || null;
 
   // Gainers
-  const gainers = buildGainers(latestAnalyses, analyses, latestMonth);
+  const previewAnalyses = analyses.filter(a => PREVIEW_CATEGORIES.includes(a.category_name));
+  const gainers = buildGainers(latestAnalyses, previewAnalyses, latestMonth);
 
   // Design trends
   const trendStyles = buildTrendStyles(designAnalyses);
@@ -220,7 +221,7 @@ export default async function DashboardPage() {
 
   return (
     <HomeClient
-      analyses={analyses}
+      analyses={previewAnalyses}
       months={months}
       latestMonth={latestMonth}
       totals={{
