@@ -8,7 +8,7 @@ import BODashIcon from './BODashIcon';
 const NAV_ITEMS = [
   { href: '/',            label: 'Home',       icon: 'home' },
   { href: '/categories',  label: 'Categories', icon: 'folder' },
-  { href: '/compare',     label: 'Compare',    icon: 'chart' },
+  { href: '/compare',     label: 'Compare',    icon: 'compare' },
 ];
 
 export default function Sidebar() {

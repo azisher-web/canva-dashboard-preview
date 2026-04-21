@@ -8,6 +8,7 @@ import { Tooltip, Donut, OvMetric, TemplateThumbnail, ScoreBar, DrawerShell, THU
 import type { CategoryTemplate } from './shared';
 import type { Analysis, NicheItem, Recommendation } from '@/lib/types';
 import type { CreatorStat, KeywordStat, ProFreeOpportunity, NicheRanking, CategoryInsights } from '@/lib/category-data';
+import { fakeCreators, fakeRankings, fakeKeywords, fakeProFreeOps, BLUR_CTA_STYLE, BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE } from '@/lib/fakeData';
 
 /* ── Creator Drawer ── */
 function CreatorDrawerContent({ creatorName, categoryTemplates }: {
@@ -474,206 +475,287 @@ export default function OverviewTab({ analysis, niches, insights, recs, category
       </div>
 
       {/* ── All Creators (top 3 visible, rest blurred) ── */}
-      {creators.length > 0 && (
+      {creators.length > 0 && (() => {
+        const blurredFakeCreators = fakeCreators(8);
+        return (
         <div style={{ marginBottom: 32 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>All Creators</div>
-          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
-            {isID ? 'Pembuat template teratas di kategori ini.' : 'Top template creators in this category.'}
-          </p>
-          {/* Visible top 3 */}
-          <div className="bento stagger">
-            {creators.slice(0, 3).map((c, i) => (
-              <div key={c.name} className="col-4">
-                <button onClick={() => setDrawerCreator(c.name)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
-                  <div className="card2 interactive" style={{ padding: '16px 20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 8px', borderRadius: 6, background: 'var(--accent-dim)', color: 'var(--accent)' }}>#{i + 1}</span>
-                      <span style={{ fontSize: 14, fontWeight: 700 }}>{c.name}</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
-                      <span>{c.count} templates</span>
-                      <span style={{ color: 'var(--purple)' }}>{c.pro} Pro</span>
-                      <span style={{ color: 'var(--green)' }}>{c.free} Free</span>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+            <div className="eyebrow">All Creators ({creators.length})</div>
+            <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, cursor: 'pointer' }}>
+              {isID ? 'Klik untuk lihat template' : 'Click to see templates'}
+            </span>
           </div>
-          {/* Blurred remaining */}
-          {creators.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {creators.slice(3, 9).map((c, i) => (
-                    <div key={c.name} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{c.name}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{c.count} templates</div>
-                      </div>
-                    </div>
-                  ))}
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 10px', lineHeight: 1.5 }}>
+            {isID ? 'Kreator diurutkan berdasarkan jumlah template — identifikasi kompetitor dan pelajari strategi mereka.' : 'Creators sorted by template count — identify competitors and study their strategies.'}
+          </p>
+          <div style={{ display: 'flex', gap: 8, fontSize: 12, fontWeight: 600, marginBottom: 14 }}>
+            <span><span style={{ color: '#f59e0b' }}>{'\u25CF'}</span> Pro</span>
+            <span><span style={{ color: 'var(--blue)' }}>{'\u25CF'}</span> Free</span>
+          </div>
+          {/* Visible top 3 */}
+          {creators.slice(0, 3).map((c, i) => {
+            const total = c.pro + c.free;
+            const proPct = total > 0 ? (c.pro / total) * 100 : 0;
+            const freePct = total > 0 ? (c.free / total) * 100 : 0;
+            return (
+              <button key={c.name} onClick={() => setDrawerCreator(c.name)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', display: 'block' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+                  <span style={{
+                    width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                    background: i === 0 ? 'var(--accent)' : i === 1 ? '#6366f1' : '#8b5cf6',
+                    color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 12, fontWeight: 800,
+                  }}>{i + 1}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, minWidth: 140, flexShrink: 0 }}>{c.name}</span>
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', height: 14, borderRadius: 4, overflow: 'hidden', background: 'var(--bg-dim)' }}>
+                    <div style={{ width: `${proPct}%`, height: '100%', background: '#f59e0b' }} />
+                    <div style={{ width: `${freePct}%`, height: '100%', background: 'var(--blue)' }} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-dim)', whiteSpace: 'nowrap', minWidth: 70, textAlign: 'right' }}>
+                    {c.pro}P {c.free}F {total}
+                  </span>
                 </div>
+              </button>
+            );
+          })}
+          {/* Blurred fake items */}
+          {creators.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 4 }}>
+              <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                {blurredFakeCreators.map((c, i) => {
+                  const total = c.pro + c.free;
+                  const proPct = total > 0 ? (c.pro / total) * 100 : 0;
+                  const freePctVal = total > 0 ? (c.free / total) * 100 : 0;
+                  return (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+                      <span style={{
+                        width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                        background: 'var(--text-dim)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 12, fontWeight: 800,
+                      }}>{i + 4}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, minWidth: 140, flexShrink: 0 }}>{c.name}</span>
+                      <div style={{ flex: 1, display: 'flex', alignItems: 'center', height: 14, borderRadius: 4, overflow: 'hidden', background: 'var(--bg-dim)' }}>
+                        <div style={{ width: `${proPct}%`, height: '100%', background: '#f59e0b' }} />
+                        <div style={{ width: `${freePctVal}%`, height: '100%', background: 'var(--blue)' }} />
+                      </div>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-dim)', whiteSpace: 'nowrap', minWidth: 70, textAlign: 'right' }}>
+                        {c.pro}P {c.free}F {total}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
+              <div style={BLUR_OVERLAY_STYLE}>
+                <div style={BLUR_CTA_STYLE}>
+                  {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
                 </div>
               </div>
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* ── Canva Ranking Signal (top 3 visible, rest blurred) ── */}
-      {rankings.length > 0 && (
+      {rankings.length > 0 && (() => {
+        const blurredFakeRankings = fakeRankings(8);
+        const ZONE_BADGE_COLORS: Record<string, { bg: string; color: string }> = {
+          blue: { bg: 'rgba(66,153,225,0.15)', color: 'var(--blue)' },
+          yellow: { bg: 'rgba(245,158,11,0.15)', color: 'var(--yellow)' },
+          red: { bg: 'rgba(238,93,80,0.15)', color: 'var(--red)' },
+        };
+        return (
         <div style={{ marginBottom: 32 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>Canva Ranking Signal</div>
-          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
-            {isID ? 'Posisi rata-rata template per niche di hasil pencarian Canva.' : 'Average template position per niche in Canva search results.'}
-          </p>
-          <div className="bento stagger">
-            {rankings.slice(0, 3).map((r, i) => (
-              <div key={r.niche} className="col-4">
-                <button onClick={() => setDrawerRanking(r)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
-                  <div className="card2 interactive" style={{ padding: '16px 20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, maxWidth: '65%' }}>{r.niche}</span>
-                      <span className={`badge-zone badge-${r.zone}`}><span className="dot" />{r.zone}</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
-                      <span style={{ color: ZONE_COLORS[r.zone] || 'var(--text-muted)' }}>Avg #{r.avgPosition}</span>
-                      <span>{r.count} templates</span>
-                      {r.signal === 'rising' && <span style={{ color: 'var(--green)' }}>&#9650; Rising</span>}
-                    </div>
-                  </div>
-                </button>
-              </div>
-            ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+            <div className="eyebrow">Canva Ranking Signal</div>
+            <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, cursor: 'pointer' }}>
+              {isID ? 'Klik untuk lihat template' : 'Click to see templates'}
+            </span>
           </div>
-          {rankings.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {rankings.slice(3, 9).map(r => (
-                    <div key={r.niche} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{r.niche}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Avg #{r.avgPosition} · {r.count} templates</div>
-                      </div>
-                    </div>
-                  ))}
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+            {isID ? 'Rata-rata posisi di pencarian Canva — semakin rendah = Canva lebih mendorong niche ini.' : 'Average position in Canva search — lower = Canva pushes this niche more.'}
+          </p>
+          {/* Visible top 3 */}
+          {rankings.slice(0, 3).map((r) => {
+            const zBadge = ZONE_BADGE_COLORS[r.zone] || { bg: 'rgba(100,100,100,0.15)', color: 'var(--text-muted)' };
+            return (
+              <button key={r.niche} onClick={() => setDrawerRanking(r)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', display: 'block' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: ZONE_COLORS[r.zone] || 'var(--text-muted)', minWidth: 56 }}>#{r.avgPosition}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, flex: 1 }}>{r.niche}</span>
+                  <span style={{
+                    fontSize: 10, fontWeight: 800, padding: '3px 10px', borderRadius: 5,
+                    background: zBadge.bg, color: zBadge.color, textTransform: 'uppercase', letterSpacing: '0.05em',
+                  }}>{r.zone}</span>
                 </div>
+              </button>
+            );
+          })}
+          {/* Blurred fake items */}
+          {rankings.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 4 }}>
+              <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                {blurredFakeRankings.map((r, i) => {
+                  const zBadge = ZONE_BADGE_COLORS[r.zone] || { bg: 'rgba(100,100,100,0.15)', color: 'var(--text-muted)' };
+                  return (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
+                      <span style={{ fontSize: 18, fontWeight: 800, color: ZONE_COLORS[r.zone] || 'var(--text-muted)', minWidth: 56 }}>#{r.avgPosition}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, flex: 1 }}>{r.niche}</span>
+                      <span style={{
+                        fontSize: 10, fontWeight: 800, padding: '3px 10px', borderRadius: 5,
+                        background: zBadge.bg, color: zBadge.color, textTransform: 'uppercase', letterSpacing: '0.05em',
+                      }}>{r.zone}</span>
+                    </div>
+                  );
+                })}
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
+              <div style={BLUR_OVERLAY_STYLE}>
+                <div style={BLUR_CTA_STYLE}>
+                  {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
                 </div>
               </div>
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* ── Keyword Intelligence (top 3 visible, rest blurred) ── */}
-      {keywords.length > 0 && (
+      {keywords.length > 0 && (() => {
+        const blurredFakeKeywords = fakeKeywords(12);
+        const kwPillStyle = (zone: string): React.CSSProperties => {
+          if (zone === 'red') return { border: '1.5px solid var(--red)', background: 'rgba(238,93,80,0.08)', color: 'var(--red)' };
+          if (zone === 'blue') return { border: '1.5px solid var(--blue)', background: 'rgba(66,153,225,0.08)', color: 'var(--blue)' };
+          return { border: '1.5px solid var(--text-dim)', background: 'var(--bg-dim)', color: 'var(--text-secondary)' };
+        };
+        return (
         <div style={{ marginBottom: 32 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>Keyword Intelligence</div>
+          <div className="eyebrow" style={{ marginBottom: 4 }}>Keyword Intelligence</div>
           <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
-            {isID ? 'Kata kunci paling umum dan zona distribusinya.' : 'Most common keywords and their zone distribution.'}
+            {isID ? 'Kata kunci paling sering muncul — warna biru menandakan peluang, merah menandakan persaingan ketat.' : 'Most frequent keywords — blue indicates opportunity, red indicates intense competition.'}
           </p>
-          <div className="bento stagger">
-            {keywords.slice(0, 3).map((k, i) => (
-              <div key={k.keyword} className="col-4">
-                <div className="card2" style={{ padding: '16px 20px' }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{k.keyword}</div>
-                  <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
-                    <span>{k.count} templates</span>
-                    <span className={`badge-zone badge-${k.zone}`}><span className="dot" />{k.zone}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: 'rgba(66,153,225,0.15)', color: 'var(--blue)' }}>blue {k.blueCount}</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: 'rgba(238,93,80,0.15)', color: 'var(--red)' }}>red {k.redCount}</span>
-                  </div>
-                </div>
-              </div>
+          {/* Visible top keywords as pills */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
+            {keywords.slice(0, 3).map((k) => (
+              <span key={k.keyword} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600,
+                ...kwPillStyle(k.zone),
+              }}>
+                {k.keyword} <span style={{ fontWeight: 800 }}>{k.count}</span>
+              </span>
             ))}
           </div>
+          {/* Blurred fake keyword pills */}
           {keywords.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {keywords.slice(3, 9).map(k => (
-                    <div key={k.keyword} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{k.keyword}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{k.count} templates</div>
-                      </div>
-                    </div>
+            <div style={{ position: 'relative', marginTop: 4 }}>
+              <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {blurredFakeKeywords.map((k, i) => (
+                    <span key={i} style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600,
+                      ...kwPillStyle(k.zone),
+                    }}>
+                      {k.keyword} <span style={{ fontWeight: 800 }}>{k.count}</span>
+                    </span>
                   ))}
                 </div>
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
+              <div style={BLUR_OVERLAY_STYLE}>
+                <div style={BLUR_CTA_STYLE}>
+                  {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
                 </div>
               </div>
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* ── Pro/Free Opportunities (top 3 visible, rest blurred) ── */}
-      {proFreeOps.length > 0 && (
+      {proFreeOps.length > 0 && (() => {
+        const blurredFakeOps = fakeProFreeOps(8);
+        return (
         <div style={{ marginBottom: 32 }}>
-          <div className="eyebrow" style={{ marginBottom: 6 }}>Pro/Free Opportunities</div>
-          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
-            {isID ? 'Peluang untuk membuat template Pro atau Free berdasarkan celah pasar.' : 'Opportunities to create Pro or Free templates based on market gaps.'}
-          </p>
-          <div className="bento stagger">
-            {proFreeOps.slice(0, 3).map((op, i) => {
-              const isFree = op.signal === 'create-free';
-              return (
-                <div key={op.niche} className="col-4">
-                  <button onClick={() => setDrawerProFree(op)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' }}>
-                    <div className="card2 interactive" style={{ padding: '16px 20px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, maxWidth: '65%' }}>{op.niche}</span>
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: isFree ? 'rgba(52,211,153,0.15)' : 'rgba(139,92,246,0.15)', color: isFree ? 'var(--green)' : 'var(--purple)', textTransform: 'uppercase' }}>{isFree ? 'Free' : 'Pro'}</span>
-                      </div>
-                      <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
-                        <span>{op.count} templates</span>
-                        <span style={{ color: 'var(--purple)' }}>{op.proPct}% pro</span>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              );
-            })}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+            <div className="eyebrow">Pro/Free Opportunities</div>
+            <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600, cursor: 'pointer' }}>
+              {isID ? 'Klik untuk lihat template' : 'Click to see templates'}
+            </span>
           </div>
-          {proFreeOps.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {proFreeOps.slice(3, 9).map(op => (
-                    <div key={op.niche} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{op.niche}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{op.count} templates · {op.proPct}% pro</div>
-                      </div>
+          <p style={{ fontSize: 12, color: 'var(--text-dim)', margin: '0 0 14px', lineHeight: 1.5 }}>
+            {isID ? 'Niche dengan ketidakseimbangan Pro/Free — buat tipe template yang masih kurang untuk merebut pasar.' : 'Niches with Pro/Free imbalance — create the underserved template type to capture the market.'}
+          </p>
+          {/* Visible top 3 */}
+          {proFreeOps.slice(0, 3).map((op) => {
+            const isFree = op.signal === 'create-free';
+            return (
+              <button key={op.niche} onClick={() => setDrawerProFree(op)} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', display: 'block' }}>
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '14px 16px', borderBottom: '1px solid var(--border)',
+                  borderRadius: 0,
+                }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{op.niche}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5 }}>
+                      {op.proPct}% Pro — {isFree
+                        ? (isID ? 'pengguna yang mencari alternatif gratis tidak bisa menemukannya di sini' : 'users seeking free alternatives can\'t find them here')
+                        : (isID ? 'peluang buat konten pro premium di niche ini' : 'opportunity to create premium pro content in this niche')}
                     </div>
-                  ))}
+                  </div>
+                  <span style={{
+                    fontSize: 10, fontWeight: 800, padding: '4px 12px', borderRadius: 6, whiteSpace: 'nowrap', flexShrink: 0, marginLeft: 16,
+                    background: isFree ? 'rgba(52,211,153,0.15)' : 'rgba(139,92,246,0.15)',
+                    color: isFree ? 'var(--green)' : 'var(--purple)',
+                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                  }}>
+                    {isFree ? 'CREATE FREE' : 'CREATE PRO'}
+                  </span>
                 </div>
+              </button>
+            );
+          })}
+          {/* Blurred fake items */}
+          {proFreeOps.length > 3 && (
+            <div style={{ position: 'relative', marginTop: 4 }}>
+              <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                {blurredFakeOps.map((op, i) => {
+                  const isFree = op.signal === 'create-free';
+                  return (
+                    <div key={i} style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '14px 16px', borderBottom: '1px solid var(--border)',
+                    }}>
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4 }}>{op.niche}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.5 }}>
+                          {op.proPct}% Pro — {op.reason}
+                        </div>
+                      </div>
+                      <span style={{
+                        fontSize: 10, fontWeight: 800, padding: '4px 12px', borderRadius: 6, whiteSpace: 'nowrap', flexShrink: 0, marginLeft: 16,
+                        background: isFree ? 'rgba(52,211,153,0.15)' : 'rgba(139,92,246,0.15)',
+                        color: isFree ? 'var(--green)' : 'var(--purple)',
+                        textTransform: 'uppercase', letterSpacing: '0.04em',
+                      }}>
+                        {isFree ? 'CREATE FREE' : 'CREATE PRO'}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 340, lineHeight: 1.5 }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
+              <div style={BLUR_OVERLAY_STYLE}>
+                <div style={BLUR_CTA_STYLE}>
+                  {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
                 </div>
               </div>
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* Creator drawer */}
       {drawerCreator && (

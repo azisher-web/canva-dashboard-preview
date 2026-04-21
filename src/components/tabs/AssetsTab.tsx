@@ -4,6 +4,7 @@ import React from 'react';
 import AssetOpportunities from '@/components/AssetOpportunities';
 import type { DesignAnalysis, AssetPack, AssetDistItem } from '@/lib/types';
 import { DrawerShell, TemplateThumbnail, EmptyState } from './shared';
+import { fakeAssetPacks, BLUR_CTA_STYLE, BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE } from '@/lib/fakeData';
 
 interface CategoryTemplate {
   title: string;
@@ -175,24 +176,39 @@ export default function AssetsTabClient({ designAnalysis, categoryTemplates }: {
           </div>
         )}
 
-        {/* Blurred remaining */}
-        {blurredPacks.length > 0 && (
-          <div style={{ position: 'relative', marginTop: 12 }}>
-            <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-              <div className="bento">
-                {blurredPacks.map((p, i) => renderPackCard(p, i + VISIBLE_LIMIT, false))}
+        {/* Blurred remaining — uses fake data so real data is never exposed */}
+        {blurredPacks.length > 0 && (() => {
+          const fake = fakeAssetPacks(blurredPacks.length);
+          return (
+            <div style={{ position: 'relative', marginTop: 12 }}>
+              <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                <div className="bento">
+                  {fake.map((f, i) => (
+                    <div key={i} className="col-4">
+                      <div className="card2" style={{ padding: '18px 20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                          <span style={{ fontSize: 20 }}>✨</span>
+                          <span style={{ fontSize: 14, fontWeight: 700 }}>{f.name}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: 10, fontSize: 12, fontWeight: 600 }}>
+                          <span>{f.freq}+ items</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={BLUR_OVERLAY_STYLE}>
+                <div style={BLUR_CTA_STYLE}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                  🔓 {blurredPacks.length} more asset packs available with full access
+                </div>
               </div>
             </div>
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
-              <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
-                🔒 Subscribe to kelaskreator.com to unlock all insights
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-                🔓 {blurredPacks.length} more asset packs available with full access
-              </div>
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {openPack && (

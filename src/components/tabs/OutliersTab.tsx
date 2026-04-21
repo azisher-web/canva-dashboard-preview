@@ -4,6 +4,7 @@ import React from 'react';
 import { TemplateThumbnail, THUMB_GRADIENTS, Tooltip } from './shared';
 import BODashIcon from '@/components/BODashIcon';
 import type { Outlier } from '@/lib/types';
+import { fakeOutliers, BLUR_CTA_STYLE, BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE } from '@/lib/fakeData';
 
 type CategoryTemplate = {
   title: string;
@@ -106,43 +107,47 @@ export default function OutliersTab({ outliers, templateMap, nicheTemplateMap, c
         {visibleOutliers.map((o, i) => renderCard(o, i))}
       </div>
 
-      {/* Blurred remaining cards with CTA overlay */}
-      {blurredOutliers.length > 0 && (
-        <div style={{ position: 'relative', marginTop: 12 }}>
-          <div
-            style={{
-              filter: 'blur(8px)',
-              WebkitFilter: 'blur(8px)',
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
-              pointerEvents: 'none',
-            }}
-            aria-hidden="true"
-          >
-            <div className="bento">
-              {blurredOutliers.map((o, i) => renderCard(o, i + VISIBLE_LIMIT))}
+      {/* Blurred remaining cards with CTA overlay — uses fake data so real data is never exposed */}
+      {blurredOutliers.length > 0 && (() => {
+        const fake = fakeOutliers(blurredOutliers.length);
+        return (
+          <div style={{ position: 'relative', marginTop: 12 }}>
+            <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+              <div className="bento">
+                {fake.map((f, i) => (
+                  <div key={i} className="col-6 card2" style={{ padding: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 7, background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+                          #{i + VISIBLE_LIMIT + 1}
+                        </span>
+                        <h3 style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em', margin: 0 }}>{f.niche}</h3>
+                      </div>
+                      <span style={{ fontSize: 14, fontWeight: 800, padding: '6px 14px', borderRadius: 10, background: 'var(--green-dim)', color: 'var(--green)', flexShrink: 0 }}>
+                        {f.score}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 14, fontSize: 12, marginBottom: 12, color: 'var(--text-dim)' }}>
+                      <span><strong style={{ color: 'var(--text-muted)' }}>{f.templates}</strong> templates</span>
+                      <span className="badge-zone badge-blue" style={{ fontSize: 11 }}><span className="dot" />{f.demand} demand</span>
+                    </div>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.65, margin: 0 }}>{f.why}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* CTA overlay */}
+            <div style={BLUR_OVERLAY_STYLE}>
+              <div style={BLUR_CTA_STYLE}>
+                🔒 Subscribe to kelaskreator.com to unlock all insights
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                🔓 {blurredOutliers.length} more outliers available with full access
+              </div>
             </div>
           </div>
-          {/* CTA overlay */}
-          <div style={{
-            position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10,
-          }}>
-            <div style={{
-              background: 'linear-gradient(135deg, #6B5BFF, #4299e1)',
-              color: '#fff', padding: '12px 28px', borderRadius: 12,
-              fontSize: 14, fontWeight: 700,
-              boxShadow: '0 8px 32px rgba(107,91,255,0.3)',
-              textAlign: 'center', maxWidth: 360, lineHeight: 1.5,
-            }}>
-              🔒 Subscribe to kelaskreator.com to unlock all insights
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-              🔓 {blurredOutliers.length} more outliers available with full access
-            </div>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

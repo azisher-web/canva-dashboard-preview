@@ -1,5 +1,6 @@
 import { getAnalysisBySlug, getCategoryTemplatesFull, buildCategoryTemplates, buildCategoryInsights, isIndonesianCategory } from '@/lib/category-data';
 import { PreviewBanner } from '@/components/PreviewGate';
+import { fakeCreators, fakeKeywords, fakeRankings, fakeProFreeOps } from '@/lib/fakeData';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,27 +50,30 @@ export default async function InsightsPage({ params }: { params: Promise<{ id: s
               </div>
             ))}
           </div>
-          {creators.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {creators.slice(3, 9).map((c) => (
-                    <div key={c.name} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700 }}>{c.name}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{c.count} templates</div>
+          {creators.length > 3 && (() => {
+            const fakeC = fakeCreators(Math.min(creators.length - 3, 6));
+            return (
+              <div style={{ position: 'relative', marginTop: 8 }}>
+                <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                  <div className="bento">
+                    {fakeC.map((c, i) => (
+                      <div key={i} className="col-4">
+                        <div className="card2" style={{ padding: '16px 20px' }}>
+                          <div style={{ fontSize: 14, fontWeight: 700 }}>{c.name}</div>
+                          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{c.count} templates</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                  <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
+                    🔒 Subscribe to kelaskreator.com to unlock all insights
+                  </div>
                 </div>
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
 
@@ -91,27 +95,30 @@ export default async function InsightsPage({ params }: { params: Promise<{ id: s
               </div>
             ))}
           </div>
-          {keywords.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {keywords.slice(3, 9).map((k) => (
-                    <div key={k.keyword} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700 }}>{k.keyword}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{k.count} templates</div>
+          {keywords.length > 3 && (() => {
+            const fakeK = fakeKeywords(Math.min(keywords.length - 3, 6));
+            return (
+              <div style={{ position: 'relative', marginTop: 8 }}>
+                <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                  <div className="bento">
+                    {fakeK.map((k, i) => (
+                      <div key={i} className="col-4">
+                        <div className="card2" style={{ padding: '16px 20px' }}>
+                          <div style={{ fontSize: 14, fontWeight: 700 }}>{k.keyword}</div>
+                          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{k.count} templates</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                  <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
+                    🔒 Subscribe to kelaskreator.com to unlock all insights
+                  </div>
                 </div>
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
 
@@ -132,27 +139,30 @@ export default async function InsightsPage({ params }: { params: Promise<{ id: s
               </div>
             ))}
           </div>
-          {rankings.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 8 }}>
-              <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {rankings.slice(3, 9).map((r) => (
-                    <div key={r.niche} className="col-4">
-                      <div className="card2" style={{ padding: '16px 20px' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700 }}>{r.niche}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Avg #{r.avgPosition}</div>
+          {rankings.length > 3 && (() => {
+            const fakeR = fakeRankings(Math.min(rankings.length - 3, 6));
+            return (
+              <div style={{ position: 'relative', marginTop: 8 }}>
+                <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                  <div className="bento">
+                    {fakeR.map((r, i) => (
+                      <div key={i} className="col-4">
+                        <div className="card2" style={{ padding: '16px 20px' }}>
+                          <div style={{ fontSize: 14, fontWeight: 700 }}>{r.niche}</div>
+                          <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>Avg #{r.avgPosition}</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                  <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
+                    🔒 Subscribe to kelaskreator.com to unlock all insights
+                  </div>
                 </div>
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       )}
 
@@ -176,6 +186,36 @@ export default async function InsightsPage({ params }: { params: Promise<{ id: s
               );
             })}
           </div>
+          {proFreeOps.length > 3 && (() => {
+            const fakePF = fakeProFreeOps(Math.min(proFreeOps.length - 3, 6));
+            return (
+              <div style={{ position: 'relative', marginTop: 8 }}>
+                <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
+                  <div className="bento">
+                    {fakePF.map((op, i) => {
+                      const isFree = op.signal === 'create-free';
+                      return (
+                        <div key={i} className="col-4">
+                          <div className="card2" style={{ padding: '16px 20px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+                              <span style={{ fontSize: 14, fontWeight: 700, maxWidth: '70%' }}>{op.niche}</span>
+                              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 5, background: isFree ? 'rgba(52,211,153,0.15)' : 'rgba(139,92,246,0.15)', color: isFree ? 'var(--green)' : 'var(--purple)', textTransform: 'uppercase' }}>{isFree ? 'Free' : 'Pro'}</span>
+                            </div>
+                            <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{op.count} templates · {op.proPct}% pro</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+                  <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '10px 24px', borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center' }}>
+                    🔒 Subscribe to kelaskreator.com to unlock all insights
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
 

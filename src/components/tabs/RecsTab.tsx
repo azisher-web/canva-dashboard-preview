@@ -5,6 +5,7 @@ import { TemplateThumbnail, ScoreBar, DrawerShell, THUMB_GRADIENTS } from './sha
 import BODashIcon from '@/components/BODashIcon';
 import { PreviewBanner } from '@/components/PreviewGate';
 import type { Recommendation, Analysis } from '@/lib/types';
+import { fakeRecs, BLUR_CTA_STYLE, BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE } from '@/lib/fakeData';
 
 type TemplateInfo = { thumbnail: string; url: string; is_pro: boolean };
 
@@ -244,24 +245,48 @@ export default function RecsTab({ recs, templateMap, analysis }: {
         {visibleRecs.map((rec, i) => renderRecCard(rec, i, true))}
       </div>
 
-      {/* Blurred remaining with CTA */}
-      {blurredRecs.length > 0 && (
-        <div style={{ position: 'relative', marginTop: 12 }}>
-          <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-            <div className="bento">
-              {blurredRecs.map((rec, i) => renderRecCard(rec, i + VISIBLE_LIMIT, false))}
+      {/* Blurred remaining with CTA — uses fake data so real data is never exposed */}
+      {blurredRecs.length > 0 && (() => {
+        const fake = fakeRecs(blurredRecs.length);
+        return (
+          <div style={{ position: 'relative', marginTop: 12 }}>
+            <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+              <div className="bento">
+                {fake.map((f, i) => (
+                  <div key={i} className="col-6 card2" style={{ padding: 22 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, padding: '3px 10px', borderRadius: 7, background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+                        #{i + VISIBLE_LIMIT + 1}
+                      </span>
+                      <span className="badge-zone badge-blue"><span className="dot" />Blue ocean</span>
+                    </div>
+                    <h3 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: 10 }}>
+                      {f.niche}
+                    </h3>
+                    <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.55, margin: '0 0 16px',
+                      display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
+                      {f.why}
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+                      <ScoreBar label="Score" value={f.score} color="var(--accent)" />
+                      <ScoreBar label="Demand" value={f.potentialDemand} color="var(--green)" />
+                      <ScoreBar label="Competition" value={f.competition} color="var(--red)" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={BLUR_OVERLAY_STYLE}>
+              <div style={BLUR_CTA_STYLE}>
+                🔒 Subscribe to kelaskreator.com to unlock all insights
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                🔓 {blurredRecs.length} more recommendations available with full access
+              </div>
             </div>
           </div>
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
-            <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
-              🔒 Subscribe to kelaskreator.com to unlock all insights
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-              🔓 {blurredRecs.length} more recommendations available with full access
-            </div>
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Drawer */}
       {openRec && (

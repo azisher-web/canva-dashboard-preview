@@ -4,6 +4,7 @@ import React from 'react';
 import DesignTrends, { type PatternDrawerData } from '@/components/DesignTrends';
 import type { DesignAnalysis } from '@/lib/types';
 import { DrawerShell, TemplateThumbnail, THUMB_GRADIENTS, EmptyState } from './shared';
+import { fakeStyles, BLUR_CTA_STYLE, BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE } from '@/lib/fakeData';
 
 interface CategoryTemplate {
   title: string;
@@ -115,24 +116,44 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
           {visiblePatterns.map((p, i) => renderPatternCard(p, i))}
         </div>
 
-        {/* Blurred remaining */}
-        {blurredPatterns.length > 0 && (
-          <div style={{ position: 'relative', marginTop: 12 }}>
-            <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-              <div className="bento">
-                {blurredPatterns.map((p, i) => renderPatternCard(p, i + VISIBLE_LIMIT))}
+        {/* Blurred remaining — uses fake data so real data is never exposed */}
+        {blurredPatterns.length > 0 && (() => {
+          const fake = fakeStyles(blurredPatterns.length);
+          return (
+            <div style={{ position: 'relative', marginTop: 12 }}>
+              <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                <div className="bento">
+                  {fake.map((f, i) => (
+                    <div key={i} className="col-4">
+                      <div className="card2" style={{ padding: '18px 20px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{f.style}</div>
+                        <div style={{ display: 'flex', gap: 14, fontSize: 12, fontWeight: 600 }}>
+                          <span>{f.count} templates</span>
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4,
+                            background: f.signal === 'high' ? 'rgba(1,181,116,0.15)' : f.signal === 'medium' ? 'rgba(255,206,32,0.15)' : 'var(--bg-hover)',
+                            color: f.signal === 'high' ? '#01B574' : f.signal === 'medium' ? '#FFCE20' : 'var(--text-dim)',
+                            textTransform: 'uppercase',
+                          }}>
+                            {f.signal} signal
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={BLUR_OVERLAY_STYLE}>
+                <div style={BLUR_CTA_STYLE}>
+                  🔒 Subscribe to kelaskreator.com to unlock all insights
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                  🔓 {blurredPatterns.length} more design trends available with full access
+                </div>
               </div>
             </div>
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
-              <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
-                🔒 Subscribe to kelaskreator.com to unlock all insights
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-                🔓 {blurredPatterns.length} more design trends available with full access
-              </div>
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {openPattern && (

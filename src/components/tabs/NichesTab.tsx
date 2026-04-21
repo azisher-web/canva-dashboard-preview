@@ -6,6 +6,7 @@ import { PreviewBanner } from '@/components/PreviewGate';
 import { DrawerShell } from './shared';
 import type { NicheItem } from '@/lib/types';
 import type { CreatorStat } from '@/lib/category-data';
+import { fakeNiches, BLUR_CTA_STYLE, BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE } from '@/lib/fakeData';
 
 interface CategoryTemplate {
   title: string;
@@ -569,41 +570,44 @@ export default function NichesTab({ niches, categoryTemplates, nicheTemplateMap,
             })}
           </div>
 
-          {/* Blurred remaining niche cards */}
-          {filtered.length > 3 && (
-            <div style={{ position: 'relative', marginTop: 12 }}>
-              <div style={{ filter: 'blur(8px)', WebkitFilter: 'blur(8px)', userSelect: 'none', WebkitUserSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
-                <div className="bento">
-                  {filtered.slice(3).map(n => (
-                    <div key={n.niche} className="col-4">
-                      <div className="card2" style={{ padding: '18px 20px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                          <div style={{ fontSize: 14.5, fontWeight: 700, lineHeight: 1.25, maxWidth: '70%' }}>{n.niche}</div>
-                          <span className={`badge-zone badge-${n.zone}`}><span className="dot" />{n.zone}</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
-                          <span style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1 }}>{n.count}</span>
-                          <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>templates &middot; {n.pct}%</span>
-                        </div>
-                        <div style={{ display: 'flex', gap: 14, fontSize: 11.5, fontWeight: 600 }}>
-                          <span style={{ color: 'var(--purple)' }}>{n.pro ?? '—'} PRO</span>
-                          <span style={{ color: 'var(--green)' }}>{n.free ?? '—'} FREE</span>
+          {/* Blurred remaining niche cards — uses fake data so real data is never exposed */}
+          {filtered.length > 3 && (() => {
+            const fake = fakeNiches(filtered.length - 3);
+            return (
+              <div style={{ position: 'relative', marginTop: 12 }}>
+                <div style={BLUR_WRAPPER_STYLE} aria-hidden="true">
+                  <div className="bento">
+                    {fake.map((f, i) => (
+                      <div key={i} className="col-4">
+                        <div className="card2" style={{ padding: '18px 20px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                            <div style={{ fontSize: 14.5, fontWeight: 700, lineHeight: 1.25, maxWidth: '70%' }}>{f.niche}</div>
+                            <span className={`badge-zone badge-${f.zone}`}><span className="dot" />{f.zone}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
+                            <span style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1 }}>{f.count}</span>
+                            <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>templates &middot; {f.pct}</span>
+                          </div>
+                          <div style={{ display: 'flex', gap: 14, fontSize: 11.5, fontWeight: 600 }}>
+                            <span style={{ color: 'var(--purple)' }}>{f.pro} PRO</span>
+                            <span style={{ color: 'var(--green)' }}>{f.free} FREE</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+                <div style={BLUR_OVERLAY_STYLE}>
+                  <div style={BLUR_CTA_STYLE}>
+                    🔒 Subscribe to kelaskreator.com to unlock all insights
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+                    🔓 {filtered.length - 3} more niches available with full access
+                  </div>
                 </div>
               </div>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, zIndex: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, #6B5BFF, #4299e1)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: '0 8px 32px rgba(107,91,255,0.3)', textAlign: 'center', maxWidth: 360, lineHeight: 1.5 }}>
-                  🔒 Subscribe to kelaskreator.com to unlock all insights
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-                  🔓 {filtered.length - 3} more niches available with full access
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
           </>
         )}
       </div>

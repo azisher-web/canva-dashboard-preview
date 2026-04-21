@@ -72,12 +72,12 @@ export default async function CategoriesPage() {
       <div style={{ position: 'relative', marginTop: 16 }}>
         <div style={{ filter: 'blur(8px)', userSelect: 'none', pointerEvents: 'none' }} aria-hidden="true">
           <div className="bento">
-            {[1, 2, 3, 4].map(i => (
+            {['Gruvento Xyloph', 'Bolvish Praxen', 'Trenza Moxplay', 'Frelkino Quarvex'].map((name, i) => (
               <div key={i} className="col-6">
                 <div className="card2" style={{ minHeight: 180, padding: '20px 24px' }}>
                   <div style={{ fontSize: 11, color: 'var(--text-dim)', fontWeight: 600 }}>2026-04</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 3 }}>Category {i}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 10 }}>Analysis data available with subscription.</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, marginTop: 3 }}>{name}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 10 }}>Zupvane britmane quolfex narvito jelvane fluxweld grothane.</div>
                 </div>
               </div>
             ))}
