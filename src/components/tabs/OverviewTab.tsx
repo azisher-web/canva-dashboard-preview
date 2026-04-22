@@ -562,9 +562,9 @@ export default function OverviewTab({ analysis, niches, insights, recs, category
                     })}
                   </div>
                   <div style={BLUR_OVERLAY_STYLE}>
-                    <div style={BLUR_CTA_STYLE}>
+                    <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                       {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
-                    </div>
+                    </a>
                   </div>
                 </div>
               );
@@ -633,9 +633,9 @@ export default function OverviewTab({ analysis, niches, insights, recs, category
                     </div>
                   </div>
                   <div style={BLUR_OVERLAY_STYLE}>
-                    <div style={BLUR_CTA_STYLE}>
+                    <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                       {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
-                    </div>
+                    </a>
                   </div>
                 </div>
               );
@@ -693,9 +693,9 @@ export default function OverviewTab({ analysis, niches, insights, recs, category
                     </div>
                   </div>
                   <div style={BLUR_OVERLAY_STYLE}>
-                    <div style={BLUR_CTA_STYLE}>
+                    <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                       {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
-                    </div>
+                    </a>
                   </div>
                 </div>
               );
@@ -770,9 +770,9 @@ export default function OverviewTab({ analysis, niches, insights, recs, category
                     </div>
                   </div>
                   <div style={BLUR_OVERLAY_STYLE}>
-                    <div style={BLUR_CTA_STYLE}>
+                    <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                       {'\uD83D\uDD12'} Subscribe to kelaskreator.com to unlock all insights
-                    </div>
+                    </a>
                   </div>
                 </div>
               );

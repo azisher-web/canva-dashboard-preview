@@ -129,7 +129,44 @@ export default function AssetsTabClient({ designAnalysis, categoryTemplates }: {
 
   return (
     <>
-      <AssetOpportunities data={designAnalysis} onOpenPack={(pack) => setDrawer(pack as AssetPack)} />
+      <div style={{ position: 'relative' }}>
+        {/* Show the real component but limit height and blur the overflow */}
+        <div style={{ maxHeight: 520, overflow: 'hidden' }}>
+          <AssetOpportunities data={designAnalysis} onOpenPack={(pack) => setDrawer(pack as AssetPack)} />
+        </div>
+        {/* Blur gradient overlay at bottom */}
+        <div style={{
+          position: 'absolute',
+          left: 0, right: 0, bottom: 0,
+          height: '60%',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          background: 'linear-gradient(to bottom, transparent 0%, rgba(var(--bg-rgb, 15,15,26), 0.4) 30%, rgba(var(--bg-rgb, 15,15,26), 0.85) 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+          zIndex: 10,
+        }}>
+          <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={{
+            background: 'linear-gradient(135deg, #6B5BFF, #4299e1)',
+            color: '#fff', padding: '10px 24px', borderRadius: 12,
+            fontSize: 13, fontWeight: 700,
+            boxShadow: '0 8px 32px rgba(107,91,255,0.3)',
+            textDecoration: 'none', display: 'inline-block',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}
+          >
+            🔒 Subscribe to kelaskreator.com to unlock all asset insights
+          </a>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
+            🔓 Full asset analysis available with premium access
+          </div>
+        </div>
+      </div>
       {drawer && (
         <DrawerShell kind="asset pack" onClose={() => setDrawer(null)}>
           <AssetPackDrawerContent pack={drawer} categoryTemplates={categoryTemplates} assetDistribution={designAnalysis.asset_distribution} />

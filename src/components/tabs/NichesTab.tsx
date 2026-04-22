@@ -230,6 +230,35 @@ function NicheTreemap({ niches, zoneCounts, onOpenNiche, allowedNiches = [] }: {
             </div>
           );
         })}
+        {/* Blur overlay on bottom portion of treemap */}
+        <div style={{
+          position: 'absolute',
+          left: 0, right: 0, bottom: 0,
+          height: '55%',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          background: 'linear-gradient(to bottom, rgba(var(--bg-rgb, 15,15,26), 0) 0%, rgba(var(--bg-rgb, 15,15,26), 0.3) 20%, rgba(var(--bg-rgb, 15,15,26), 0.6) 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 15,
+          pointerEvents: 'auto',
+        }}>
+          <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={{
+            background: 'linear-gradient(135deg, #6B5BFF, #4299e1)',
+            color: '#fff', padding: '10px 24px', borderRadius: 12,
+            fontSize: 13, fontWeight: 700,
+            boxShadow: '0 8px 32px rgba(107,91,255,0.3)',
+            textDecoration: 'none', display: 'inline-block',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}
+          >
+            🔒 Subscribe to unlock all niches
+          </a>
+        </div>
+
         {/* Hover tooltip */}
         {hovered && (() => {
           const c = cells.find(c => c.niche.niche === hovered);
@@ -598,9 +627,9 @@ export default function NichesTab({ niches, categoryTemplates, nicheTemplateMap,
                   </div>
                 </div>
                 <div style={BLUR_OVERLAY_STYLE}>
-                  <div style={BLUR_CTA_STYLE}>
+                  <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                     🔒 Subscribe to kelaskreator.com to unlock all insights
-                  </div>
+                  </a>
                   <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
                     🔓 {filtered.length - 3} more niches available with full access
                   </div>

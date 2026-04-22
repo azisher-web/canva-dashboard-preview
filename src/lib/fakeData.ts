@@ -143,6 +143,10 @@ export const BLUR_CTA_STYLE: React.CSSProperties = {
   textAlign: 'center',
   maxWidth: 340,
   lineHeight: 1.5,
+  textDecoration: 'none',
+  display: 'inline-block',
+  transition: 'transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease',
+  cursor: 'pointer',
 };
 
 export const BLUR_WRAPPER_STYLE: React.CSSProperties = {

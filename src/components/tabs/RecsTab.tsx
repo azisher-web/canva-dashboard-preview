@@ -196,7 +196,7 @@ export default function RecsTab({ recs, templateMap, analysis }: {
 
   if (recs.length === 0) return <EmptyState text="No recommendations available." />;
 
-  const VISIBLE_LIMIT = 3;
+  const VISIBLE_LIMIT = 2;
   const visibleRecs = recs.slice(0, VISIBLE_LIMIT);
   const blurredRecs = recs.slice(VISIBLE_LIMIT);
 
@@ -277,9 +277,9 @@ export default function RecsTab({ recs, templateMap, analysis }: {
               </div>
             </div>
             <div style={BLUR_OVERLAY_STYLE}>
-              <div style={BLUR_CTA_STYLE}>
+              <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                 🔒 Subscribe to kelaskreator.com to unlock all insights
-              </div>
+              </a>
               <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
                 🔓 {blurredRecs.length} more recommendations available with full access
               </div>

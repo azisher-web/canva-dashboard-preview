@@ -37,7 +37,7 @@ export default function OutliersTab({ outliers, templateMap, nicheTemplateMap, c
 
   if (outliers.length === 0) return <EmptyState text="No outliers found." />;
 
-  const VISIBLE_LIMIT = 3;
+  const VISIBLE_LIMIT = 2;
   const visibleOutliers = outliers.slice(0, VISIBLE_LIMIT);
   const blurredOutliers = outliers.slice(VISIBLE_LIMIT);
 
@@ -138,9 +138,9 @@ export default function OutliersTab({ outliers, templateMap, nicheTemplateMap, c
             </div>
             {/* CTA overlay */}
             <div style={BLUR_OVERLAY_STYLE}>
-              <div style={BLUR_CTA_STYLE}>
+              <a href="https://kelaskreator.com/" target="_blank" rel="noopener noreferrer" style={BLUR_CTA_STYLE} onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(107,91,255,0.45)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,91,255,0.3)'; }}>
                 🔒 Subscribe to kelaskreator.com to unlock all insights
-              </div>
+              </a>
               <div style={{ fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
                 🔓 {blurredOutliers.length} more outliers available with full access
               </div>
