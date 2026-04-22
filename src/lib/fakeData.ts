@@ -149,6 +149,180 @@ export function fakeRecs(count: number) {
   }));
 }
 
+/* ── Trends: Style Recommendations ── */
+export function fakeStyleRecs(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    niche: FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0],
+    current_dominant: FAKE_STYLES[i % FAKE_STYLES.length],
+    recommended_style: FAKE_STYLES[(i + 3) % FAKE_STYLES.length],
+    reason: 'Xvelta prax glenthix morvane zupfeld duskova britmix quolfern narvito.',
+  }));
+}
+
+/* ── Assets: Top 10 rows ── */
+export function fakeAssetDistRows(count: number) {
+  const cats = ['Object Cutout', 'Shape', 'Texture', 'Stationery'];
+  return Array.from({ length: count }, (_, i) => ({
+    name: FAKE_ASSETS[i % FAKE_ASSETS.length],
+    category: cats[i % cats.length],
+    count: rand(2, 15),
+    niche_count: rand(1, 5),
+  }));
+}
+
+/* ── Assets: Pack cards ── */
+export function fakeAssetPackCards(count: number) {
+  const cats = ['Object Cutout', 'Shape', 'Texture'];
+  return Array.from({ length: count }, (_, i) => ({
+    pack_name: `${FAKE_ASSETS[i % FAKE_ASSETS.length]} Pack`,
+    category: cats[i % cats.length],
+    item_count: rand(15, 50),
+    pricing_suggestion: ['$5-10', '$10-20', '$3-8'][i % 3],
+    demand_signal: ['high', 'medium', 'low'][i % 3],
+    niche_count: rand(2, 6),
+    total_appearances: rand(5, 20),
+    competition: ['low', 'medium', 'high'][i % 3],
+    assets: FAKE_ASSETS.slice(0, rand(3, 6)),
+  }));
+}
+
+/* ── Assets: All Detected Assets table rows ── */
+export function fakeAssetTableRows(count: number) {
+  const cats = ['Object Cutout', 'Shape', 'Texture', 'Stationery'];
+  return Array.from({ length: count }, (_, i) => ({
+    name: FAKE_ASSETS[i % FAKE_ASSETS.length],
+    category: cats[i % cats.length],
+    count: rand(1, 10),
+    niche_count: rand(1, 4),
+    styles: [FAKE_STYLES[i % FAKE_STYLES.length]],
+    hero_count: rand(0, 3),
+    accent_count: rand(0, 3),
+    bg_count: rand(0, 2),
+  }));
+}
+
+/* ── Insights: Niche Dominance ── */
+export function fakeNicheDominance(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    niche: FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0],
+    zone: ['blue', 'yellow', 'red'][i % 3],
+    topCreator: FAKE_NAMES[i % FAKE_NAMES.length],
+    dominancePct: rand(15, 60),
+    totalCreators: rand(2, 8),
+  }));
+}
+
+/* ── Insights: Creator Strategy ── */
+export function fakeCreatorStrategies(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    name: FAKE_NAMES[i % FAKE_NAMES.length],
+    count: rand(3, 20),
+    proPct: rand(10, 90),
+    strategy: (['Pro-focused', 'Free-focused', 'Mixed'] as const)[i % 3],
+    avgPos: rand(50, 350),
+  }));
+}
+
+/* ── Insights: Blue Keywords ── */
+export function fakeBlueKeywords(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    keyword: FAKE_KEYWORDS[i % FAKE_KEYWORDS.length],
+    count: rand(2, 15),
+    niches: [FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0]],
+  }));
+}
+
+/* ── Insights: Keyword Ranking ── */
+export function fakeKeywordRanking(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    keyword: FAKE_KEYWORDS[i % FAKE_KEYWORDS.length],
+    avgPosition: rand(50, 400),
+    count: rand(3, 20),
+  }));
+}
+
+/* ── Insights: Position Buckets ── */
+export function fakePositionBuckets(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    range: `${i * 50 + 1}–${(i + 1) * 50}`,
+    blue: rand(1, 20),
+    yellow: rand(1, 15),
+    red: rand(1, 25),
+  }));
+}
+
+/* ── Insights: Free Opp Scores ── */
+export function fakeFreeOppScores(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    niche: FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0],
+    zone: ['blue', 'yellow', 'red'][i % 3],
+    score: rand(30, 80),
+    proPct: rand(40, 95),
+    count: rand(3, 20),
+  }));
+}
+
+/* ── Insights: Style Saturation ── */
+export function fakeStyleSaturation(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    style: FAKE_STYLES[i % FAKE_STYLES.length],
+    nicheCount: rand(1, 8),
+    totalNiches: 10,
+    pct: rand(10, 80),
+  }));
+}
+
+/* ── Insights: Style × Zone ── */
+export function fakeStyleZone(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    style: FAKE_STYLES[i % FAKE_STYLES.length],
+    blue: rand(0, 15),
+    yellow: rand(0, 10),
+    red: rand(0, 20),
+  }));
+}
+
+/* ── Insights: Contrarian ── */
+export function fakeContrarianStyles(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    niche: FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0],
+    nicheStyle: FAKE_STYLES[i % FAKE_STYLES.length],
+    categoryDominant: FAKE_STYLES[(i + 4) % FAKE_STYLES.length],
+  }));
+}
+
+/* ── Insights: Style Diversity ── */
+export function fakeStyleDiversity(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    niche: FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0],
+    styleCount: rand(2, 6),
+    diversity: rand(10, 80),
+    dominant: FAKE_STYLES[i % FAKE_STYLES.length],
+    dominantPct: rand(30, 90),
+  }));
+}
+
+/* ── Insights: Rare Assets ── */
+export function fakeAssetRarity(count: number) {
+  const cats = ['Object Cutout', 'Shape', 'Texture', 'Stationery'];
+  return Array.from({ length: count }, (_, i) => ({
+    name: FAKE_ASSETS[i % FAKE_ASSETS.length],
+    category: cats[i % cats.length],
+    nicheCount: rand(1, 2),
+    heroCount: rand(1, 4),
+  }));
+}
+
+/* ── Insights: Underserved Assets ── */
+export function fakeUnderservedAssets(count: number) {
+  const cats = ['Object Cutout', 'Shape', 'Texture', 'Stationery', 'Nature & Organic', 'Other'];
+  return Array.from({ length: count }, (_, i) => ({
+    category: cats[i % cats.length],
+    bluePct: rand(5, 50),
+    totalCount: rand(10, 60),
+  }));
+}
+
 /** CTA overlay styles used across all blur sections */
 export const BLUR_CTA_STYLE: React.CSSProperties = {
   background: 'linear-gradient(135deg, #6B5BFF, #4299e1)',

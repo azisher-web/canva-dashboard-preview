@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import BODashIcon from '@/components/BODashIcon';
 import type { PatternDrawerData } from '@/components/DesignTrends';
-import type { DesignAnalysis, CrossNichePattern, NicheStyleItem } from '@/lib/types';
+import type { DesignAnalysis, CrossNichePattern, NicheStyleItem, StyleRecommendation } from '@/lib/types';
 import { DrawerShell, TemplateThumbnail, EmptyState } from './shared';
 import {
-  fakeStyles, fakeCrossNichePatterns, fakeNicheStyles,
+  fakeStyles, fakeCrossNichePatterns, fakeNicheStyles, fakeStyleRecs,
   BLUR_WRAPPER_STYLE, BLUR_OVERLAY_STYLE, BLUR_CTA_STYLE,
 } from '@/lib/fakeData';
 
@@ -229,9 +229,12 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
     setDrawer({ ...p, matchedTemplates: matched });
   };
 
+  const recommendations = designAnalysis.style_recommendations || [];
+
   const fakeStyleData = fakeStyles(Math.max(0, styleData.length - VISIBLE));
   const fakePatternData = fakeCrossNichePatterns(Math.max(0, patterns.length - VISIBLE));
   const fakeNicheData = fakeNicheStyles(Math.max(0, nicheStyles.length - VISIBLE));
+  const fakeRecData = fakeStyleRecs(Math.max(0, recommendations.length - VISIBLE));
 
   return (
     <>
@@ -413,6 +416,70 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
             </div>
           </div>
         </div>
+
+        {/* ────── Style Recommendations ────── */}
+        {recommendations.length > 0 && (
+          <div>
+            <div className="eyebrow" style={{ marginBottom: 14 }}>Style Recommendations</div>
+            <BlurSection
+              hasMore={recommendations.length > VISIBLE}
+              ctaLabel="Subscribe to unlock all recommendations"
+              fakeContent={
+                <div className="bento">
+                  {fakeRecData.map((rec, i) => (
+                    <div key={i} className="col-4">
+                      <div className="card2" style={{ padding: '16px 20px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{rec.niche}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                          <span style={{
+                            fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 6,
+                            background: getStyleColor(rec.current_dominant) + '20', color: getStyleColor(rec.current_dominant),
+                          }}>
+                            Current: {rec.current_dominant}
+                          </span>
+                          <BODashIcon name="arrowRight" size={12} color="var(--text-dim)" />
+                          <span style={{
+                            fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                            background: getStyleColor(rec.recommended_style) + '20', color: getStyleColor(rec.recommended_style),
+                          }}>
+                            Try: {rec.recommended_style}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.55, margin: 0 }}>{rec.reason}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              <div className="bento">
+                {recommendations.slice(0, VISIBLE).map((rec, i) => (
+                  <div key={i} className="col-4">
+                    <div className="card2" style={{ padding: '16px 20px' }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{rec.niche}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                        <span style={{
+                          fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 6,
+                          background: getStyleColor(rec.current_dominant) + '20', color: getStyleColor(rec.current_dominant),
+                        }}>
+                          Current: {rec.current_dominant}
+                        </span>
+                        <BODashIcon name="arrowRight" size={12} color="var(--text-dim)" />
+                        <span style={{
+                          fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 6,
+                          background: getStyleColor(rec.recommended_style) + '20', color: getStyleColor(rec.recommended_style),
+                        }}>
+                          Try: {rec.recommended_style}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.55, margin: 0 }}>{rec.reason}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </BlurSection>
+          </div>
+        )}
       </div>
 
       {/* Drawer */}
