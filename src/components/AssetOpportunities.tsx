@@ -95,7 +95,7 @@ export default function AssetOpportunities({ data, onOpenPack }: { data: DesignA
       {/* Top 10 Recurring Assets — 2-column grid */}
       <div className="card2" style={{ padding: 22, marginBottom: 28 }}>
         <div className="eyebrow" style={{ marginBottom: 16 }}>Top 10 Recurring Assets</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {assets.slice(0, 10).map((a, i) => {
             const maxCount = assets[0]?.count || 1;
             const pct = Math.round((a.count / maxCount) * 100);

@@ -14,39 +14,99 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  /* Detect mobile viewport */
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  /* Close mobile sidebar on navigation */
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   /* Read persisted theme + set density on mount */
   useEffect(() => {
     const saved = (localStorage.getItem('bo_theme') as 'light' | 'dark') || 'light';
-    // Default to light theme per design spec
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
     document.documentElement.setAttribute('data-density', 'comfort');
   }, []);
 
-  /* Sync attribute + localStorage whenever theme changes (after mount) */
+  /* Sync attribute + localStorage whenever theme changes */
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('bo_theme', theme);
   }, [theme]);
 
   return (
-    <aside
-      style={{
-        width: 256,
-        flexShrink: 0,
-        background: 'var(--bg-card-solid)',
-        borderRight: '1px solid var(--border)',
-        padding: '24px 16px',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 40,
-      }}
-    >
+    <>
+      {/* Mobile hamburger button */}
+      {isMobile && !mobileOpen && (
+        <button
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+          style={{
+            position: 'fixed',
+            top: 12,
+            left: 12,
+            zIndex: 50,
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            border: '1px solid var(--border)',
+            background: 'var(--bg-card-solid)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h18M3 6h18M3 18h18" /></svg>
+        </button>
+      )}
+
+      {/* Mobile backdrop */}
+      {isMobile && mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.4)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 45,
+            transition: 'opacity 0.2s ease',
+          }}
+        />
+      )}
+
+      <aside
+        style={{
+          width: 256,
+          flexShrink: 0,
+          background: 'var(--bg-card-solid)',
+          borderRight: '1px solid var(--border)',
+          padding: '24px 16px',
+          position: 'fixed',
+          top: 0,
+          left: isMobile && !mobileOpen ? -280 : 0,
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          zIndex: 50,
+          overflowY: 'auto',
+          transition: 'left 0.25s ease',
+        }}
+      >
       {/* Logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 8px', marginBottom: 32 }}>
         <div
@@ -120,7 +180,7 @@ export default function Sidebar() {
       {/* Spacer to push bottom section down */}
       <div style={{ flex: 1 }} />
 
-      {/* Theme toggle — positioned above user card */}
+      {/* Theme toggle */}
       <div
         style={{
           display: 'flex',
@@ -184,7 +244,7 @@ export default function Sidebar() {
           Dark
         </button>
       </div>
-
     </aside>
+    </>
   );
 }

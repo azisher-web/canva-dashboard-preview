@@ -437,7 +437,7 @@ function OverviewPanel({ analysis, niches, insights, recs, onTabChange, category
       </div>
 
       {/* ═══ Top Creators + Ranking Signal side by side ═══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32, alignItems: 'start' }}>
+      <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32, alignItems: 'start' }}>
         {/* Top Creators — scrollable list showing ALL creators */}
         {creators.length > 0 && (
           <div className="card2" style={{ padding: 22, overflow: 'hidden' }}>
@@ -545,7 +545,7 @@ function OverviewPanel({ analysis, niches, insights, recs, onTabChange, category
       </div>
 
       {/* ═══ Keyword Intelligence + Pro/Free Opportunities side by side ═══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
+      <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 32 }}>
         {/* Keyword Intelligence */}
         {keywords.length > 0 && (
           <div className="card2" style={{ padding: 22 }}>

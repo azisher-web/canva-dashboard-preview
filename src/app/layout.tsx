@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Sidebar />
-        <div className="app-main-wrapper" style={{ marginLeft: 256 }}>
+        <div className="app-main-wrapper">
           <main className="app-main">
             {children}
           </main>

@@ -143,10 +143,11 @@ p  { font-size: 0.938rem; line-height: 1.65; }
 .app-shell { display: flex; min-height: 100vh; }
 .app-main-wrapper {
   min-height: 100vh;
+  margin-left: 256px;
   background: var(--bg);
   background-image: var(--hero-gradient);
   background-repeat: no-repeat;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, margin-left 0.25s ease;
 }
 .app-main {
   max-width: 1200px;
@@ -566,4 +567,168 @@ p  { font-size: 0.938rem; line-height: 1.65; }
 .stagger > *:nth-child(8) { animation-delay: 0.28s; }
 @media (prefers-reduced-motion: reduce) {
   .rise, .stagger > * { animation: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Mobile Responsive — max-width: 768px
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* ─── Layout: remove sidebar margin ─── */
+  .app-main-wrapper {
+    margin-left: 0 !important;
+  }
+  .app-main {
+    padding: 16px 16px 100px;
+  }
+
+  /* ─── Hero header ─── */
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 56px 0 20px;
+  }
+
+  /* ─── Bento grid: single column ─── */
+  .bento {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .bento > [class*='col-'] {
+    grid-column: span 1 !important;
+  }
+
+  /* ─── Stat cards: tighter padding ─── */
+  .stat-card, .stat2 {
+    padding: 14px 12px;
+  }
+  .stat-value, .stat2 .v {
+    font-size: 1.4rem;
+  }
+
+  /* ─── Cards: tighter padding ─── */
+  .card, .card2 {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  /* ─── Tabs: horizontal scroll ─── */
+  .tabs2 {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex-wrap: nowrap;
+  }
+  .tabs2::-webkit-scrollbar { display: none; }
+  .tab2 {
+    padding: 8px 14px;
+    font-size: 12.5px;
+    flex-shrink: 0;
+  }
+
+  /* ─── Chip nav: horizontal scroll ─── */
+  .chipnav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: 14px;
+    padding: 8px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .chipnav::-webkit-scrollbar { display: none; }
+  .chipnav button {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 11.5px;
+  }
+
+  /* ─── Type chip row: scroll ─── */
+  .type-chip {
+    padding: 6px 11px;
+    font-size: 11.5px;
+  }
+
+  /* ─── Drawer: full-width on mobile ─── */
+  .drawer {
+    width: 100vw;
+    padding: 20px 16px;
+    border-left: none;
+    border-radius: 0;
+  }
+
+  /* ─── Sub-nav rail: horizontal on mobile ─── */
+  .subnav-rail {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 6px;
+    gap: 4px;
+  }
+  .subnav-rail::-webkit-scrollbar { display: none; }
+  .subnav-item {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* ─── Tables: horizontal scroll ─── */
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* ─── Typography scale-down ─── */
+  h1 { font-size: 1.35rem; }
+  h2 { font-size: 1.1rem; }
+  .display-xl { font-size: clamp(28px, 7vw, 40px); }
+  .display-lg { font-size: clamp(24px, 6vw, 32px); }
+
+  /* ─── Tweaks panel: bottom sheet style ─── */
+  .tweaks {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    min-width: unset;
+    border-radius: 14px;
+  }
+
+  /* ─── Scroll container: shorter on mobile ─── */
+  .scroll-container {
+    max-height: 300px;
+  }
+
+  /* ─── Responsive grid utilities ─── */
+  .grid-responsive-2,
+  .grid-responsive-4,
+  .grid-responsive-6 {
+    grid-template-columns: 1fr !important;
+  }
+  .grid-responsive-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .grid-responsive-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid-responsive-2col-to-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ─── Flex wrap helpers ─── */
+  .flex-responsive-wrap {
+    flex-wrap: wrap !important;
+  }
 }

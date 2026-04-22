@@ -446,7 +446,7 @@ export default function HomeClient({
         >
           <Link href={`/category/${topOpp.category_name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div
-              className="card2 interactive accent"
+              className="card2 interactive accent grid-responsive-2col-to-1"
               style={{ padding: 28, display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 32, alignItems: 'center' }}
             >
               <div>
@@ -476,7 +476,7 @@ export default function HomeClient({
 
       {/* ─── Section 2: Snapshot ─── */}
       <HomeSection eyebrow={t.snapshot} title={t.thisMonthGlance}>
-        <div style={{
+        <div className="grid-responsive-stats" style={{
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2,
           background: 'var(--border)', border: '1px solid var(--border)',
           borderRadius: 16, overflow: 'hidden',
@@ -489,7 +489,7 @@ export default function HomeClient({
       </HomeSection>
 
       {/* ─── Section 3: Leaderboard (2-column) ─── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 60 }}>
+      <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 60 }}>
 
         {/* Left: Most blue ocean niches */}
         <HomeSection
@@ -550,7 +550,7 @@ export default function HomeClient({
         title={t.stylesDominating}
         link={topOpp ? { label: `${t.exploreIn}${topOppName}`, href: `/category/${topOpp.category_name}` } : undefined}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+        <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           {trendStyles.map((s, i) => (
             <div key={i} className="card2" style={{ padding: 24, position: 'relative', overflow: 'hidden' }}>
               <div style={{
@@ -580,7 +580,7 @@ export default function HomeClient({
           title={t.hottestAssets}
           link={topOpp ? { label: `${t.seeIn}${topOppName}`, href: `/category/${topOpp.category_name}` } : undefined}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12 }}>
+          <div className="grid-responsive-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12 }}>
             {hotAssets.map((r, i) => (
               <div key={i} className="card2" style={{ padding: '16px 14px', textAlign: 'center' }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-dim)' }}>#{i + 1}</div>
@@ -606,7 +606,7 @@ export default function HomeClient({
           title={t.handpicked}
           link={topOpp ? { label: t.allRecs, href: `/category/${topOpp.category_name}` } : undefined}
         >
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {featuredRecs.map((r, i) => (
               <Link key={i} href={`/category/${r.categorySlug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="card2 interactive" style={{ padding: 22, display: 'flex', flexDirection: 'column', gap: 0 }}>

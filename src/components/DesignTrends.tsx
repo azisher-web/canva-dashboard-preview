@@ -83,7 +83,7 @@ export default function DesignTrends({ data, onOpenPattern }: { data: DesignAnal
 
       {/* Key Insights */}
       {insights.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 28 }}>
+        <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 28 }}>
           {insights.map((insight, i) => (
             <div key={i} className="card2" style={{
               padding: '14px 18px', fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.65,
@@ -96,7 +96,7 @@ export default function DesignTrends({ data, onOpenPattern }: { data: DesignAnal
       )}
 
       {/* Style Distribution + Cross-Niche Patterns */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 28, alignItems: 'start' }}>
+      <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 28, alignItems: 'start' }}>
         {/* Style Distribution — no scroll, full height */}
         <div className="card2" style={{ padding: 22 }}>
           <div className="eyebrow" style={{ marginBottom: 16 }}>Style Distribution (Blue Ocean Only)</div>
@@ -180,7 +180,7 @@ export default function DesignTrends({ data, onOpenPattern }: { data: DesignAnal
       {/* Per-Niche Style Breakdown — master/detail layout */}
       <div className="card2" style={{ padding: 22, marginBottom: 28 }}>
         <div className="eyebrow" style={{ marginBottom: 16 }}>Style per Niche (click to explore)</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <div className="grid-responsive-2col-to-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
           {/* Niche list */}
           <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, paddingRight: 8 }}>
             {nicheStyles.map((ns, i) => {
