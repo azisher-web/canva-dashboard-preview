@@ -112,6 +112,24 @@ export function fakeStyles(count: number) {
   }));
 }
 
+export function fakeCrossNichePatterns(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    style: FAKE_STYLES[i % FAKE_STYLES.length],
+    signal: (['high', 'medium', 'low'] as const)[i % 3],
+    total_count: rand(5, 30),
+    niches: FAKE_NICHES.slice(0, rand(2, 5)).map(n => n.split(' / ')[0]),
+    pattern: `Xvelta ${FAKE_STYLES[i % FAKE_STYLES.length]} prax`,
+  }));
+}
+
+export function fakeNicheStyles(count: number) {
+  return Array.from({ length: count }, (_, i) => ({
+    niche: FAKE_NICHES[i % FAKE_NICHES.length].split(' / ')[0],
+    dominant_style: FAKE_STYLES[i % FAKE_STYLES.length],
+    styles: FAKE_STYLES.slice(0, rand(2, 4)).map((s, j) => ({ style: s, count: rand(1, 10) })),
+  }));
+}
+
 export function fakeAssetPacks(count: number) {
   return Array.from({ length: count }, (_, i) => ({
     name: FAKE_ASSETS[i % FAKE_ASSETS.length],
