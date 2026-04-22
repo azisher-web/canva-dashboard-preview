@@ -267,11 +267,11 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
           </div>
         )}
 
-        {/* ────── Style Distribution + Cross-Niche Patterns (2-col) ────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 28, alignItems: 'start' }}>
+        {/* ────── Style Distribution + Cross-Niche Patterns (2-col, equal height) ────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 28, alignItems: 'stretch' }}>
 
           {/* Style Distribution — top 3 visible, rest locked */}
-          <div className="card2" style={{ padding: 22 }}>
+          <div className="card2" style={{ padding: 22, display: 'flex', flexDirection: 'column' }}>
             <div className="eyebrow" style={{ marginBottom: 16 }}>Style Distribution (Blue Ocean Only)</div>
             <BlurSection
               hasMore={styleData.length > VISIBLE}
@@ -293,7 +293,7 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
           </div>
 
           {/* Cross-Niche Patterns — top 3 visible, rest locked */}
-          <div className="card2" style={{ padding: 22 }}>
+          <div className="card2" style={{ padding: 22, display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <div className="eyebrow" style={{ margin: 0 }}>Cross-Niche Patterns</div>
               <span style={{ fontSize: 11, color: 'var(--text-dim)', fontWeight: 500 }}>Click to see templates</span>
@@ -325,7 +325,7 @@ export default function TrendsTabClient({ designAnalysis, categoryTemplates }: {
         {/* ────── Style per Niche — top 3 visible, rest locked ────── */}
         <div className="card2" style={{ padding: 22, marginBottom: 28 }}>
           <div className="eyebrow" style={{ marginBottom: 16 }}>Style per Niche (click to explore)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, maxHeight: 320, overflow: 'hidden' }}>
             {/* Niche list — top 3 real + blurred fake */}
             <div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
